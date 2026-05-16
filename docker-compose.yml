@@ -1,0 +1,9 @@
+services:
+  app:
+    image: ${IMAGE_NAME:-cv-project}:${IMAGE_TAG:-latest}
+    container_name: cv-project
+    ports:
+      - "${APP_PORT:-8501}:8501"
+    env_file:
+      - .env.runtime
+    restart: unless-stopped
