@@ -12,7 +12,7 @@ pipeline {
 
         // Comma-separated env var names to inject into runtime env file.
         // Example: APP_ENV_KEYS=UNSPLASH_ACCESS_KEY
-        APP_ENV_KEYS = "${env.APP_ENV_KEYS}"
+        APP_ENV_KEYS = "${env.UNSPLASH_ACCESS_KEY ? 'UNSPLASH_ACCESS_KEY' : ''}"
     }
 
     stages {
