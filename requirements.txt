@@ -5,7 +5,6 @@ requests>=2.31.0
 streamlit>=1.33.0
 streamlit-webrtc>=0.47.0
 av>=10.0.0
-tornado>=6.4.0
 tensorflow==2.16.2
 protobuf>=4.25.3,<5
 tensorflow-datasets>=4.9.4

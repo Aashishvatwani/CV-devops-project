@@ -64,9 +64,9 @@ def main() -> None:
     smoothed_point = None
     last_gesture_time = 0.0
     last_draw_time = 0.0
-    draw_grace_s = 0.5
+    draw_grace_s = 1.0
     draw_lock = True
-    draw_lock_timeout = 1.5
+    draw_lock_timeout = 5.0
     notepad_mode = False
     kf = _create_kalman()
     color_cycle = [(0, 255, 0), (0, 255, 255), (255, 0, 0), (0, 128, 255), (255, 0, 255), (255, 255, 255)]
@@ -107,7 +107,7 @@ def main() -> None:
             measurement = np.array([[np.float32(raw_x)], [np.float32(raw_y)]])
             kf.correct(measurement)
             pred = kf.predict()
-            index_point = (int(pred[0]), int(pred[1]))
+            index_point = (int(pred[0, 0]), int(pred[1, 0]))
             point_history.append(index_point)
             avg_x = int(sum(p[0] for p in point_history) / len(point_history))
             avg_y = int(sum(p[1] for p in point_history) / len(point_history))
@@ -241,7 +241,11 @@ def main() -> None:
             print(last_shape_log)
 
             access_key = os.getenv("UNSPLASH_ACCESS_KEY", "")
-            if access_key and label and label != "unknown":
+            if not access_key:
+                print("Unsplash key missing. Set UNSPLASH_ACCESS_KEY.")
+            elif label in ("model_missing", "model_load_failed"):
+                print("Prediction model not available. Train or place model/quickdraw_cnn.h5.")
+            elif label and label != "unknown":
                 url = fetch_image_url(label, access_key)
                 if url:
                     print(f"Unsplash image: {url}")
@@ -276,7 +280,7 @@ def main() -> None:
             print(f"Notepad mode: {notepad_mode}")
         if key == ord("u"):
             canvas.undo()
-        if key == ord("y"):
+        if key == ord("z"):
             canvas.redo()
         if key == ord("1"):
             tool = "pen"
@@ -302,7 +306,7 @@ def main() -> None:
             color = (0, 255, 0)
         if key == ord("b"):
             color = (255, 0, 0)
-        if key == ord("y"):
+        if key == ord("k"):
             color = (0, 255, 255)
         if key == ord("w"):
             color = (255, 255, 255)

@@ -42,7 +42,7 @@ Thumbs.db
 *.pth
 *.h5
 data/
-models/
+
 
 # Logs
 logs/

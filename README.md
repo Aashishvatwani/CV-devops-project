@@ -103,11 +103,11 @@ Keyboard shortcuts:
 - `o`: OCR label (convert sketch to text)
 - `m`: calculator OCR + evaluate
 - `u`: undo
-- `y`: redo
+- `z`: redo
 - `1/2/3`: pen / pencil / marker
 - `d/e/a`: draw / erase / auto mode
 - `[ / ]`: decrease / increase thickness
-- `r/g/b/y/w`: change color
+- `r/g/b/k/w`: change color
 - `l`: toggle draw lock
 - `n`: toggle notepad mode (white background)
 

@@ -30,9 +30,12 @@ class SketchPredictor:
                 self.labels = [line.strip() for line in f if line.strip()]
 
     def predict(self, canvas_bgr: np.ndarray) -> Tuple[str, float]:
+        if not os.path.exists(self.model_path):
+            return "model_missing", 0.0
+
         self._load_model()
         if self.model is None:
-            return "unknown", 0.0
+            return "model_load_failed", 0.0
 
         if canvas_bgr.ndim == 3 and canvas_bgr.shape[:2] == (28, 28):
             normalized = canvas_bgr.astype("float32")

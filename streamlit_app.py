@@ -60,9 +60,9 @@ class DrawProcessor(VideoProcessorBase):
         self._point_history = deque(maxlen=7)
         self._min_move_px = 1
         self._last_draw_time = 0.0
-        self._draw_grace_s = 0.5
+        self._draw_grace_s = 1.0
         self._draw_lock = False
-        self._draw_lock_timeout = 1.5
+        self._draw_lock_timeout = 5.0
         self._notepad_mode = False
         self._kf = _create_kalman()
         self._tool = "pen"
@@ -159,7 +159,7 @@ class DrawProcessor(VideoProcessorBase):
             measurement = np.array([[np.float32(raw_x)], [np.float32(raw_y)]])
             self._kf.correct(measurement)
             pred = self._kf.predict()
-            index_point = (int(pred[0]), int(pred[1]))
+            index_point = (int(pred[0, 0]), int(pred[1, 0]))
             cursor_point = index_point
 
             self._point_history.append(index_point)
