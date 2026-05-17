@@ -152,8 +152,8 @@ class DrawProcessor(VideoProcessorBase):
             index_mcp = hand["landmarks"][5]
             middle_tip = hand["landmarks"][12]
             middle_pip = hand["landmarks"][10]
-                        fist = not fingers["thumb"] and not fingers["index"] and not fingers["middle"] and not fingers["ring"] and not fingers["pinky"]
-                        index_rotated = abs(index_tip[0] - index_mcp[0]) > 0.08
+            fist = not fingers["thumb"] and not fingers["index"] and not fingers["middle"] and not fingers["ring"] and not fingers["pinky"]
+            index_rotated = abs(index_tip[0] - index_mcp[0]) > 0.08
             raw_x = int(index_tip[0] * self.canvas.width)
             raw_y = int(index_tip[1] * self.canvas.height)
             measurement = np.array([[np.float32(raw_x)], [np.float32(raw_y)]])
