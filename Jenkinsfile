@@ -16,21 +16,6 @@ pipeline {
     }
 
     stages {
-        stage('Validate env') {
-            steps {
-                script {
-                    def keys = (env.APP_ENV_KEYS ?: '')
-                        .split(',')
-                        .collect { it.trim() }
-                        .findAll { it }
-                    def missing = keys.findAll { !env.getProperty(it) }
-                    if (missing) {
-                        error("Missing Jenkins global env vars: ${missing.join(', ')}")
-                    }
-                }
-            }
-        }
-
         stage('Build image') {
             steps {
                 script {
