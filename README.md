@@ -160,7 +160,7 @@ Example (8 classes, 5000 samples each):
 python scripts\train_quickdraw.py --classes "apple,cat,car,tree,cell phone,sun,moon,earth" --samples-per-class 5000
 ```
 
-Train 70+ classes using the provided list:
+Train 10 classes using the provided list:
 
 ```powershell
 python scripts\train_quickdraw.py --labels-file labels_80.txt --samples-per-class 5000

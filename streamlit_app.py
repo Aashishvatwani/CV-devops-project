@@ -152,6 +152,12 @@ class DrawProcessor(VideoProcessorBase):
             index_mcp = hand["landmarks"][5]
             middle_tip = hand["landmarks"][12]
             middle_pip = hand["landmarks"][10]
+            ring_tip = hand["landmarks"][16]
+            ring_pip = hand["landmarks"][14]
+            pinky_tip = hand["landmarks"][20]
+            pinky_pip = hand["landmarks"][18]
+            thumb_tip = hand["landmarks"][4]
+            thumb_ip = hand["landmarks"][3]
             fist = not fingers["thumb"] and not fingers["index"] and not fingers["middle"] and not fingers["ring"] and not fingers["pinky"]
             index_rotated = abs(index_tip[0] - index_mcp[0]) > 0.08
             raw_x = int(index_tip[0] * self.canvas.width)
@@ -179,17 +185,22 @@ class DrawProcessor(VideoProcessorBase):
 
             index_dist = ((index_tip[0] - index_pip[0]) ** 2 + (index_tip[1] - index_pip[1]) ** 2) ** 0.5
             middle_dist = ((middle_tip[0] - middle_pip[0]) ** 2 + (middle_tip[1] - middle_pip[1]) ** 2) ** 0.5
+            ring_dist = ((ring_tip[0] - ring_pip[0]) ** 2 + (ring_tip[1] - ring_pip[1]) ** 2) ** 0.5
+            pinky_dist = ((pinky_tip[0] - pinky_pip[0]) ** 2 + (pinky_tip[1] - pinky_pip[1]) ** 2) ** 0.5
+            thumb_dist = ((thumb_tip[0] - thumb_ip[0]) ** 2 + (thumb_tip[1] - thumb_ip[1]) ** 2) ** 0.5
             index_extended = index_dist > 0.04
             middle_extended = middle_dist > 0.04
-            draw_mode = index_extended and not middle_extended and not fingers["ring"] and not fingers["pinky"]
-            erase_mode = index_extended and middle_extended and not fingers["ring"] and not fingers["pinky"]
-            clear_mode = all(fingers.values())
+            ring_extended = ring_dist > 0.04
+            pinky_extended = pinky_dist > 0.04
+            thumb_extended = thumb_dist > 0.04
+            draw_mode = index_extended and not middle_extended and not ring_extended and not pinky_extended
+            erase_mode = index_extended and middle_extended and not ring_extended and not pinky_extended
+            clear_mode = thumb_extended and index_extended and middle_extended and ring_extended and pinky_extended
+            three_fingers = index_extended and middle_extended and ring_extended and not pinky_extended
 
             if self._use_gestures:
                 now = time.time()
                 if now - self._last_gesture_time > 0.5:
-                    thumb_tip = hand["landmarks"][4]
-                    thumb_ip = hand["landmarks"][3]
                     thumb_up = thumb_tip[1] < thumb_ip[1] - 0.02
                     thumb_down = thumb_tip[1] > thumb_ip[1] + 0.02
                     if thumb_up and not fingers["index"] and not fingers["middle"] and not fingers["ring"] and not fingers["pinky"]:
@@ -200,7 +211,7 @@ class DrawProcessor(VideoProcessorBase):
                         self.canvas.decrease_thickness()
                         self._thickness = self.canvas.thickness
                         self._last_gesture_time = now
-                    elif fingers["index"] and fingers["middle"] and fingers["ring"] and not fingers["pinky"]:
+                    elif three_fingers:
                         self._color_index = (self._color_index + 1) % len(self._color_cycle)
                         self._color = self._color_cycle[self._color_index]
                         self._last_gesture_time = now

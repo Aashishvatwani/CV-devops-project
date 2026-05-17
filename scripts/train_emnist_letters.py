@@ -54,12 +54,13 @@ def main() -> None:
 
     os.makedirs("model", exist_ok=True)
     model.save("model/letter_cnn.h5")
+    model.save("model/letter_cnn.keras")
 
     with open("model/letter_labels.txt", "w", encoding="utf-8") as f:
         for i in range(1, 27):
             f.write(chr(ord("A") + i - 1) + "\n")
 
-    print("Saved model/letter_cnn.h5 and model/letter_labels.txt")
+    print("Saved model/letter_cnn.h5, model/letter_cnn.keras, and model/letter_labels.txt")
 
 
 if __name__ == "__main__":

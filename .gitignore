@@ -47,7 +47,7 @@ data/
 # Logs
 logs/
 *.log
-
+dataset/
 # Environment variables
 .env
 .env.local

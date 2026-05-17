@@ -114,7 +114,9 @@ def main() -> None:
     target = []
 
     labels_used = []
+    print(f"Loading labels: {len(labels)}")
     for idx, label in enumerate(labels):
+        print(f"Downloading {label}...")
         npy_path = download_class(label, args.data_dir)
         if npy_path is None:
             print(f"Skipping label (not found): {label}")
@@ -145,10 +147,14 @@ def main() -> None:
     model = build_model(len(labels_used))
     model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
 
+    print(f"Training samples: {len(x_train)}, validation samples: {len(x_val)}")
     model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=args.epochs, batch_size=128)
 
     os.makedirs(os.path.dirname(args.model_out), exist_ok=True)
     model.save(args.model_out)
+    if args.model_out.endswith(".h5"):
+        keras_out = args.model_out[:-3] + ".keras"
+        model.save(keras_out)
 
     with open(args.labels_out, "w", encoding="utf-8") as f:
         for label in labels_used:
@@ -159,4 +165,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
- main()
+    main()
