@@ -23,7 +23,7 @@ pipeline {
                         .split(',')
                         .collect { it.trim() }
                         .findAll { it }
-                    def missing = keys.findAll { !env[it] }
+                    def missing = keys.findAll { !env.getProperty(it) }
                     if (missing) {
                         error("Missing Jenkins global env vars: ${missing.join(', ')}")
                     }
@@ -51,7 +51,7 @@ pipeline {
                         .findAll { it }
                     def lines = []
                     for (k in keys) {
-                        lines << "${k}=${env[k]}"
+                        lines << "${k}=${env.getProperty(k)}"
                     }
                     writeFile file: '.env.runtime', text: lines.join("\n") + "\n"
                 }
