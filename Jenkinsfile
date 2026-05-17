@@ -66,30 +66,9 @@ pipeline {
             }
         }
 
-        stage('Cloudflare tunnel') {
-            steps {
-                withCredentials([string(credentialsId: env.CF_TUNNEL_TOKEN_ID, variable: 'CF_TUNNEL_TOKEN')]) {
-                    script {
-                        if (isUnix()) {
-                            sh '''
-                                set -e
-                                if ! command -v cloudflared >/dev/null 2>&1; then
-                                    curl -L -o cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
-                                    chmod +x cloudflared
-                                    CLOUD_FLARED=./cloudflared
-                                else
-                                    CLOUD_FLARED=cloudflared
-                                fi
-
-                                pkill -f "cloudflared tunnel" >/dev/null 2>&1 || true
-                                nohup "$CLOUD_FLARED" tunnel run --token "$CF_TUNNEL_TOKEN" >/var/tmp/cloudflared.log 2>&1 &
-                            '''
-                        } else {
-                            bat "echo Cloudflare tunnel stage is supported only on Unix agents"
-                        }
-                    }
-                }
-            }
+       
+                
+            
         }
     }
 }
