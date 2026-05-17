@@ -47,7 +47,15 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        sh "IMAGE_NAME=${env.IMAGE_NAME} IMAGE_TAG=${env.IMAGE_TAG} APP_PORT=${env.APP_PORT} docker compose -f docker-compose.yml up -d --remove-orphans"
+                        sh '''
+                            if command -v docker-compose >/dev/null 2>&1; then
+                                IMAGE_NAME=${IMAGE_NAME} IMAGE_TAG=${IMAGE_TAG} APP_PORT=${APP_PORT} \
+                                    docker-compose -f docker-compose.yml up -d --remove-orphans
+                            else
+                                IMAGE_NAME=${IMAGE_NAME} IMAGE_TAG=${IMAGE_TAG} APP_PORT=${APP_PORT} \
+                                    docker compose -f docker-compose.yml up -d --remove-orphans
+                            fi
+                        '''
                     } else {
                         bat "set IMAGE_NAME=${env.IMAGE_NAME}&& set IMAGE_TAG=${env.IMAGE_TAG}&& set APP_PORT=${env.APP_PORT}&& docker compose -f docker-compose.yml up -d --remove-orphans"
                     }
