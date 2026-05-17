@@ -31,28 +31,6 @@ pipeline {
             }
         }
 
-        stage('Python venv') {
-            steps {
-                script {
-                    if (isUnix()) {
-                        sh '''
-                            python3 -m venv .venv
-                            . .venv/bin/activate
-                            python -m pip install --upgrade pip
-                            pip install -r requirements.txt
-                        '''
-                    } else {
-                        bat '''
-                            python -m venv .venv
-                            call .venv\\Scripts\\activate
-                            python -m pip install --upgrade pip
-                            pip install -r requirements.txt
-                        '''
-                    }
-                }
-            }
-        }
-
         stage('Build image') {
             steps {
                 script {
