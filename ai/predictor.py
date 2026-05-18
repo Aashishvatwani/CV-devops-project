@@ -17,6 +17,17 @@ class SketchPredictor:
         self.labels = None
 
     def _resolve_model_path(self) -> str:
+        base, ext = os.path.splitext(self.model_path)
+        candidates = [self.model_path]
+        if ext == ".keras":
+            candidates.append(base + ".h5")
+        elif ext == ".h5":
+            candidates.append(base + ".keras")
+
+        for path in candidates:
+            if os.path.exists(path):
+                return path
+
         return self.model_path
 
     def _load_model(self) -> None:
@@ -25,34 +36,45 @@ class SketchPredictor:
 
         model_path = self._resolve_model_path()
 
+        if os.path.exists(self.labels_path):
+            try:
+                with open(self.labels_path, "r", encoding="utf-8") as f:
+                    self.labels = [line.strip() for line in f if line.strip()]
+            except Exception as e:
+                print(f"Labels loading failed: {e}")
+
         if not os.path.exists(model_path):
-            print(f"Model file not found: {model_path}")
+            print(f"Model weights not found: {model_path}")
             return
 
+        num_classes = len(self.labels) if self.labels else 10
+
         try:
-            from tensorflow.keras.models import load_model
+            from tensorflow.keras.models import Sequential
+            from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
         except Exception as e:
             print(f"TensorFlow import error: {e}")
             return
 
         try:
-            self.model = load_model(model_path, compile=False)
+            model = Sequential(
+                [
+                    Conv2D(32, (3, 3), activation="relu", input_shape=(28, 28, 1)),
+                    MaxPooling2D(pool_size=(2, 2)),
+                    Conv2D(64, (3, 3), activation="relu"),
+                    MaxPooling2D(pool_size=(2, 2)),
+                    Flatten(),
+                    Dense(128, activation="relu"),
+                    Dropout(0.3),
+                    Dense(num_classes, activation="softmax"),
+                ]
+            )
+            model.load_weights(model_path)
+            self.model = model
             print("Model loaded successfully")
         except Exception as e:
             print(f"Model loading failed: {e}")
             self.model = None
-            return
-
-        if os.path.exists(self.labels_path):
-            try:
-                with open(self.labels_path, "r", encoding="utf-8") as f:
-                    self.labels = [
-                        line.strip()
-                        for line in f
-                        if line.strip()
-                    ]
-            except Exception as e:
-                print(f"Labels loading failed: {e}")
 
     def predict(self, canvas_bgr: np.ndarray) -> Tuple[str, float]:
         model_path = self._resolve_model_path()
