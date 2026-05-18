@@ -171,6 +171,16 @@ If any label is not in the Quick Draw dataset, it will be skipped with a warning
 If you want more accuracy, increase `--samples-per-class` and `--epochs`.
 The training script downloads Quick Draw data from Google storage, so an internet connection is required.
 
+## Fix quantization_config model load errors
+
+If you see `quantization_config` errors when loading the `.h5` model, run:
+
+```powershell
+python scripts\clean_quickdraw_model.py --model-in model\quickdraw_cnn.h5 --labels model\labels.txt --model-out model\quickdraw_cnn.keras
+```
+
+Then use the `.keras` model for prediction.
+
 ## Train the calculator model (digits + operators)
 
 ```powershell
