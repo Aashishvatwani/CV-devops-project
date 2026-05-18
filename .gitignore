@@ -51,3 +51,4 @@ dataset/
 # Environment variables
 .env
 .env.local
+mumbai-2.pem

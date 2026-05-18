@@ -176,7 +176,7 @@ The training script downloads Quick Draw data from Google storage, so an interne
 If you see `quantization_config` errors when loading the `.h5` model, run:
 
 ```powershell
-python scripts\clean_quickdraw_model.py --model-in model\quickdraw_cnn.h5 --labels model\labels.txt --model-out model\quickdraw_cnn.keras
+python scripts\clean_quickdraw_model.py --model-in model\quickdraw_cnn.h5 --labels model\labels.txt --model-out model\quickdraw_cnn.keras --force-rebuild
 ```
 
 Then use the `.keras` model for prediction.

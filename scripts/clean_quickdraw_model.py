@@ -34,21 +34,23 @@ def main() -> None:
     parser.add_argument("--model-in", default="model/quickdraw_cnn.h5")
     parser.add_argument("--labels", default="model/labels.txt")
     parser.add_argument("--model-out", default="model/quickdraw_cnn.keras")
+    parser.add_argument("--force-rebuild", action="store_true")
     args = parser.parse_args()
 
     labels = load_labels(args.labels)
     num_classes = len(labels)
 
-    # Try direct load first (may fail on quantization_config).
-    try:
-        model = tf.keras.models.load_model(args.model_in, compile=False)
-        model.save(args.model_out)
-        print(f"Saved cleaned model to {args.model_out}")
-        return
-    except Exception:
-        pass
+    if not args.force_rebuild:
+        # Try direct load first (may fail on quantization_config).
+        try:
+            model = tf.keras.models.load_model(args.model_in, compile=False)
+            model.save(args.model_out)
+            print(f"Saved cleaned model to {args.model_out}")
+            return
+        except Exception:
+            pass
 
-    # Fallback: rebuild architecture and load weights.
+    # Rebuild architecture and load weights.
     model = build_model(num_classes)
     model.load_weights(args.model_in)
     model.save(args.model_out)
